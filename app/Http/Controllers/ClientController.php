@@ -25,7 +25,7 @@ class ClientController extends Controller
         $request->validate(
             [
                 'name' => 'required',
-                'email' => ['required', 'email', 'unique:clients'],
+                'email' => 'required|email|unique:clients',
                 'phone' => 'required'
             ]
         );
@@ -50,7 +50,13 @@ class ClientController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $client = Client::find($id);
+
+        if(!$client){
+            return response()->json(['message' => 'Client not found'], 404);
+        }
+
+        return response()->json($client);
     }
 
     /**
@@ -58,7 +64,31 @@ class ClientController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // validate the request
+        $request->validate([
+            'name' => 'required',
+            'email' => "required|email|unique:clients,email,$id",
+            'phone' => 'required'
+        ]);
+
+        // uptdate the client data in database
+        $client = Client::find($id);
+
+        if(!$client){
+            return response()->json(['message' => 'Client not found'], 404);
+        }
+
+        $client->name = $request->name;
+        $client->email = $request->email;
+        $client->phone = $request->phone;
+        $client->save();
+        
+        return response()->json(
+            [
+                'message' => 'client updated succesfully',
+                'data' => $client
+            ]
+        );
     }
 
     /**
