@@ -21,7 +21,28 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // validate the request
+        $request->validate(
+            [
+                'name' => 'required',
+                'email' => ['required', 'email', 'unique:clients'],
+                'phone' => 'required'
+            ]
+        );
+
+        // add a new client to the database
+        $client = new Client();
+        $client->name = $request->name;
+        $client->email = $request->email;
+        $client->phone = $request->phone;
+        $client->save();
+
+        return response()->json(
+            [
+                'message' => 'client created succesfully',
+                'data' => $client
+            ]
+        );
     }
 
     /**
