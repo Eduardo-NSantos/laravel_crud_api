@@ -13,6 +13,11 @@ class ClientController extends Controller
      */
     public function index()
     {
+        // check if the token allows this results
+        if(!auth()->user()->tokenCan('clients:list')){
+            return ApiResponse::unauthorized();
+        }
+
         // return all clients in the database
         return ApiResponse::success(Client::all());
     }
@@ -46,6 +51,11 @@ class ClientController extends Controller
      */
     public function show(string $id)
     {
+        // check if the token allows this results
+        if(!auth()->user()->tokenCan('clients:detail')){
+            return ApiResponse::unauthorized();
+        }
+
         $client = Client::find($id);
 
         if(!$client){
