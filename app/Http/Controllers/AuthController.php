@@ -30,9 +30,6 @@ class AuthController extends Controller
         // authenticate user
         $user = auth()->user();
 
-        // assume o tempo de expiração que está configurado no sanctum
-        // $token = $user->createToken($user->name)->plainTextToken;
-
         // definir o tempo de expiração para o token
         $token = $user->createToken($user->name, ['*'], now()->addHour())->plainTextToken;
         
